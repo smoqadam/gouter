@@ -105,25 +105,34 @@ func mid2(next http.Handler) http.Handler {
 
 ### Context
 ```go
-type App struct {
-  Name string
-}
-func main() {
-  r := router.NewRouter()
-  app := &App{Name:"Gouter"}
-  r.With(app)
-  r.GET("/user/{user}", userHandler).
-      Name("index").
-      Where("user", "[a-z0-9]+")
+package main
 
-  http.ListenAndServe(":3000", r)
+import (
+	"fmt"
+	"net/http"
+
+	router "github.com/smoqadam/gouter"
+)
+
+type App struct {
+	Name string
+}
+
+func main() {
+	r := router.NewRouter()
+	app := &App{Name: "Gouter"}
+	r.With(app)
+	r.GET("/user/{user}", userHandler).
+		Name("index").
+		Where("user", "[a-z0-9]+")
+
+	http.ListenAndServe(":3000", r)
 }
 
 func userHandler(w http.ResponseWriter, r *http.Request) {
-   app := router.Context().(App)
-   fmt.FprintF(w, "hello, world!", app.Name)
+	app := router.Context(r).(*App)
+	fmt.Fprintf(w, "hello, %s!", app.Name)
 }
-
 ```
 
 
