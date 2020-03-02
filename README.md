@@ -11,12 +11,15 @@ So I wrote this for two reason:
  2. Create simpler router
  3. Making a router is fun and easy (-_-)
 
-### Features
+### Todo
 
 - [x] Middlewares
 - [x] Support params in URL 
 - [x] Send custom type to the handlers (Context)
-
+- [ ] More tests
+- [ ] Documentation
+- [ ] Get URL by route name
+- [ ] 
 
 Installation
 
@@ -81,7 +84,7 @@ func main() {
 
 func userHandler(w http.ResponseWriter, r *http.Request) {
    vars := router.Vars(r)
-   fmt.FprintF(w, "hello, world!", r["user"])
+   fmt.FprintF(w, "hello, world!", vars["user"])
 }
 
 func mid1(next http.Handler) http.Handler {
@@ -100,7 +103,28 @@ func mid2(next http.Handler) http.Handler {
 ```
 
 
+### Context
+```go
+type App struct {
+  Name string
+}
+func main() {
+  r := router.NewRouter()
+  app := &App{Name:"Gouter"}
+  r.With(app)
+  r.GET("/user/{user}", userHandler).
+      Name("index").
+      Where("user", "[a-z0-9]+")
 
+  http.ListenAndServe(":3000", r)
+}
+
+func userHandler(w http.ResponseWriter, r *http.Request) {
+   app := router.Context().(App)
+   fmt.FprintF(w, "hello, world!", app.Name)
+}
+
+```
 
 
 
