@@ -1,24 +1,24 @@
-# gouter
-Yet another router for Go
+# Gouter: Yet another router for Go
+
 
 ### Why another router?
 
-First of all I'm learning Go and IMO, learning by doing is the best way to learn. Secondly, I used gorilla/mux router and negroni 
-middleware but I didn't like them. As a PHP/JS developer the gorolla/mux and negroni was not so stright forward for me. 
-So I wrote this for two reason:
-
+These are my reasons to write this:
  1. Learning Go
  2. Create simpler router
- 3. Making a router is fun and easy (-_-)
-
+ 3. Making a router is fun and easy
+ 4. To fight with my burnout (-_-)
+ 
 ### Todo
 
 - [x] Middlewares
 - [x] Support params in URL 
 - [x] Send custom type to the handlers (Context)
 - [ ] More tests
+- [ ] Benchmark
 - [ ] Documentation
 - [ ] Get URL by route name
+- [ ] attach multiple context to the Request
 
 Installation
 
@@ -106,9 +106,9 @@ func mid2(next http.Handler) http.Handler {
 ```
 
 
-### Context
+### Attach a context to the Request
 
-Sometimes we need to send an struct to our handler such as controller or model obejct. `With` method on router instance recieves an `interface` and send it through `http.Request` to the handler.
+Sometimes we need to send an struct to our handler such as controller or model obejct. `With` method in router instance recieves an `interface` and send it through `http.Request` to the handler.
 
 
 ```go
