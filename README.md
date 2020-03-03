@@ -19,7 +19,6 @@ So I wrote this for two reason:
 - [ ] More tests
 - [ ] Documentation
 - [ ] Get URL by route name
-- [ ] 
 
 Installation
 
@@ -28,7 +27,7 @@ Installation
 
 ## How to use Gouter
 
-#### Simple 
+### Simple 
 
 ```go
 
@@ -46,7 +45,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 ```
 
-#### Route with Params
+### Route with Params
+
+You can have dynamic path and send the paramters to the handler:
 
 ```go
 
@@ -62,12 +63,14 @@ func main() {
 
 func userHandler(w http.ResponseWriter, r *http.Request) {
    vars := router.Vars(r)
-   fmt.FprintF(w, "hello, world!", r["user"])
+   fmt.Fprintf(w, "hello, world!", vars["user"])
 }
 
 ```
 
 ####  Middlewares
+
+Middleware method receives one or more middleware function and execute them before the final handler. The middleware function receives a `http.handler` and return a `http.handler`. By calling `next.ServeHTTP(w, r)` at the end of your handler it will run the next middleware or the final handler.
 
 ```go
 
@@ -97,13 +100,17 @@ func mid1(next http.Handler) http.Handler {
 func mid2(next http.Handler) http.Handler {
   return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request){
       fmt.Println("from middleware 2")
-      next.ServeHTTP(w, r) // call another middleware or the final handler
+      w.WriteHeader(http.StatusBadRequest) // send 400 status code to the client
   });
 }
 ```
 
 
 ### Context
+
+Sometimes we need to send an struct to our handler such as controller or model obejct. `With` method on router instance recieves an `interface` and send it through `http.Request` to the handler.
+
+
 ```go
 package main
 
@@ -130,11 +137,9 @@ func main() {
 }
 
 func userHandler(w http.ResponseWriter, r *http.Request) {
+	// We can access to *App like this
 	app := router.Context(r).(*App)
 	fmt.Fprintf(w, "hello, %s!", app.Name)
 }
 ```
-
-
-
 
